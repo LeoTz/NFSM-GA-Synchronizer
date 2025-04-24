@@ -83,5 +83,5 @@ This project is for academic use under the CMP49411 course.
 
 ## 👨‍💻 Authors
 
-Timothy Joseph
-Muhammed Ahmer
+- Timothy Joseph
+- Muhammed Ahmer
