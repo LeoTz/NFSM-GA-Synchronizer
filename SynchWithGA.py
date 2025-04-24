@@ -577,7 +577,7 @@ if __name__ == "__main__":
             nfsm_id = nfsm.getId()
             print(f"Processing NFSM {idx+1}/{len(nfsms)}: {nfsm_id}")
             
-            solution, length, time, memory = ga.run(nfsm)
+            solution, length, elapsed_time, memory = ga.run(nfsm)
             
             # Gather machine attributes
             machine_attributes = {
@@ -594,7 +594,7 @@ if __name__ == "__main__":
             machine_result = {
                 "machine": nfsm_id,
                 "machine_attributes": machine_attributes,
-                "execution_time_seconds": time if time is not None else None,
+                "execution_time_seconds": elapsed_time if elapsed_time is not None else None,
                 "memory_usage_mb": memory if memory is not None else 0.0,
                 "success": solution is not None
             }
@@ -602,7 +602,7 @@ if __name__ == "__main__":
             if solution:
                 machine_result["rs_length"] = length
                 machine_result["resetting_sequence"] = solution
-                print(f"Found resetting sequence of length {length} in {time:.2f} seconds")
+                print(f"Found resetting sequence of length {length} in {elapsed_time:.2f} seconds")
                 print(f"Sequence: {solution}")
                 print(f"Peak memory usage: {memory:.2f} MB")
             else:

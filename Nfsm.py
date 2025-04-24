@@ -23,6 +23,10 @@ class Nfsm:
     def getNoInputs(self):
         # Return the number of inputs in the nfsm
         return self.inputCount
+    
+    def getNoOutputs(self):
+        # Return the number of inputs in the nfsm
+        return self.outputCount
 
     def getNoTransitions(self):
         # Return the number of transitions in the nfsm
@@ -31,6 +35,10 @@ class Nfsm:
     def getNoStates(self):
         # Return the number of states in the nfsm
         return self.stateCount
+    
+    def getSaturation(self):
+        # Return the saturation
+        return self.saturation
 
     def getId(self):
         # Return the ID of the nfsm
