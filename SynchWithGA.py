@@ -70,6 +70,11 @@ class NFSMGeneticAlgorithm:
 
             while fsm_header:
                 fsm_header_parts = fsm_header.split()
+                # Skip blank lines
+                if not fsm_header_parts:
+                    fsm_header = file.readline()
+                    continue
+
                 fsm_id = fsm_header_parts[0]  # Extract FSM ID as a string
                 numOfStates, numInputs, numOutputs, saturation, numTransitions, L = map(int, fsm_header_parts[1:])
 
