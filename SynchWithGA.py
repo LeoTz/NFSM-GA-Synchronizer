@@ -8,6 +8,7 @@ import os
 import json
 import sys
 from typing import List, Dict, Tuple, Set, Optional, Union, FrozenSet
+import datetime
 
 # Assuming these are imported from external files
 from Node import Node
@@ -499,19 +500,13 @@ class NFSMGeneticAlgorithm:
         else:
             return None, None, None, 0.0
 
-import argparse
-import os
-import json
-import sys
-import datetime
-
 # Example usage
 if __name__ == "__main__":
     # Set up command line argument parser
     parser = argparse.ArgumentParser(description='Run Genetic Algorithm for NFSM Synchronization')
     parser.add_argument('input_file', type=str, help='Path to the NFSM file')
-    parser.add_argument('-o', '--output_file', type=str, default='results.json', 
-                        help='Path to the output file (default: results.json)')
+    parser.add_argument('-o', '--output_file', type=str, default='results.txt', 
+                        help='Path to the output file (default: results.txt)')
     parser.add_argument('-p', '--population_size', type=int, default=60,
                         help='Population size (default: 60)')
     parser.add_argument('-i', '--max_iterations', type=int, default=30,
@@ -606,28 +601,28 @@ if __name__ == "__main__":
             
             if solution:
                 machine_result["rs_length"] = length
-                machine_result["resetting_sequence"] = solution
-                print(f"Found resetting sequence of length {length} in {elapsed_time:.2f} seconds")
+                machine_result["synchronizing_sequence"] = solution
+                print(f"Found synchronizing sequence of length {length} in {elapsed_time:.2f} seconds")
                 print(f"Sequence: {solution}")
                 print(f"Peak memory usage: {memory:.2f} MB")
             else:
                 machine_result["rs_length"] = None
-                machine_result["resetting_sequence"] = None
-                print("No resetting sequence found")
+                machine_result["synchronizing_sequence"] = None
+                print("No synchronizing sequence found")
             
             results["machines"].append(machine_result)
             print("-" * 50)
         
         # Save results to output file
-        with open(args.output_file, 'w') as f:
-            json.dump(results, f, indent=2)
+        # with open('results.json', 'w') as f:
+        #    json.dump(results, f, indent=2)
         
-        print(f"Results saved to {args.output_file}")
+        # print(f"Results saved to {results.json}")
         
         # Also generate a summary to the console
         print("\nSUMMARY:")
         print("-" * 50)
-        print(f"{'Machine':<10} {'States':<8} {'Inputs':<8} {'RS Length':<10} {'Time (s)':<10} {'Memory (MB)':<12}")
+        print(f"{'Machine':<10} {'States':<8} {'Inputs':<8} {'SS Length':<10} {'Time (s)':<10} {'Memory (MB)':<12}")
         print("-" * 50)
         
         for machine in results["machines"]:
@@ -635,6 +630,22 @@ if __name__ == "__main__":
             rs_length = machine["rs_length"] if machine["rs_length"] is not None else "N/A"
             time_val = f"{machine['execution_time_seconds']:.2f}" if machine['execution_time_seconds'] is not None else "N/A"
             print(f"{machine['machine']:<10} {attrs['num_states']:<8} {attrs['num_inputs']:<8} {rs_length:<10} {time_val:<10} {machine['memory_usage_mb']:.2f}")
+        print("-" * 50)
+    
+        # Save summary results to a text file
+        with open(args.output_file, "w") as txt_file:
+            txt_file.write(f"{'FSM ID':<12} {'#States':<10} {'#Inputs':<10} {'#Outputs':<11} "
+                        f"{'Time (s)':<10} {'Memory (MB)':<12} {'SS Length':<10} {'Synchronizing Sequence'}\n")
+            txt_file.write("-" * 100 + "\n")
+            for machine in results["machines"]:
+                attrs = machine["machine_attributes"]
+                rs_length = machine["rs_length"] if machine["rs_length"] is not None else "N/A"
+                sequence = ' '.join(map(str, machine["synchronizing_sequence"])) if machine["synchronizing_sequence"] else "N/A"
+                time_val = f"{machine['execution_time_seconds']:.2f}" if machine['execution_time_seconds'] is not None else "N/A"
+                memory_val = f"{machine['memory_usage_mb']:.2f}"
+                txt_file.write(f"{machine['machine']:<12} {attrs['num_states']:<10} {attrs['num_inputs']:<10} "
+                            f"{attrs['num_outputs']:<11} {time_val:<10} {memory_val:<12} {rs_length:<10} {sequence}\n")
+        print("\nTabular summary saved to results.txt")
         
     except Exception as e:
         print(f"Error: {str(e)}")
